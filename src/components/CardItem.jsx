@@ -40,7 +40,7 @@ export default function CardItem(props) {
   return (
     <Card sx={{ maxWidth: 345 }}>
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} >
-        <Avatar alt="Remy Sharp" sx={{ width: 200, height: 200 }} />
+        <Avatar alt="Remy Sharp" sx={{width: { xs: 100, sm: 150, md: 200 }, height: {xs: 100, sm: 150, md: 200} }} />
       </Box>
       <CardContent>
        <DeleteAlert id={props.id} deleteCard={deleteCard}/>
