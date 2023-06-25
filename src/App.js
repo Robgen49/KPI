@@ -14,6 +14,7 @@ const darkTheme = createTheme({
     },
     secondary:{
       main: '#9e9ea6',
+      secondary: 'grey',
       completed: '#013220',
       error: '#1a0000'
     }

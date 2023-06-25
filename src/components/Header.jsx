@@ -1,25 +1,44 @@
 import * as React from 'react';
-import {AppBar, Box, Divider, Drawer, IconButton, List, ListItem, ListItemText, Toolbar, Typography, Button} from '@mui/material';
+import { AppBar, Box, Divider, Drawer, IconButton, List, ListItem, ListItemText, Toolbar, Typography, Button, TextField } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setModalTrue } from '../features/ModalSlice'
+import { setCards } from '../features/CardsSlice';
 
 const drawerWidth = 200;
 
 function Header() {
     const [mobileOpen, setMobileOpen] = React.useState(false);
+    const cards = useSelector(state => state.cards.value)
+    const [searchQuery, setSearchQuery] = React.useState('')
+
+    const dispatch = useDispatch()
+
+    React.useMemo( () => {
+        let cardsArray = []
+        for (const key in localStorage) {
+            if (!localStorage.hasOwnProperty(key)) {
+                continue
+            }
+            cardsArray.push(JSON.parse(localStorage.getItem(key)))
+        }
+        dispatch(setCards(cardsArray.filter(card => card.title.toLowerCase().includes(searchQuery.toLowerCase()))))
+    }, [searchQuery])
+
+    const handleSearch = event => {
+        setSearchQuery(event.target.value)
+    }
 
     const handleDrawerToggle = () => {
         setMobileOpen((prevState) => !prevState);
     };
 
-    const dispatch = useDispatch()
-
     const handleOpenModal = () => {
         dispatch(setModalTrue())
-    }; 
+    };
 
     const drawer = (
         <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
@@ -56,18 +75,22 @@ function Header() {
                         fontSize={40}
                         letterSpacing={2}
                         component="div"
-                        sx={{ flexGrow: 1, display: { xs: 'none', sm: 'none', md:'block' } }}
+                        sx={{ flexGrow: 1, display: { xs: 'none', sm: 'none', md: 'block' } }}
                     >
                         KPI
                     </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'flex-end', mr: 10}}>
+                        <SearchIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
+                        <TextField size='small' onChange={handleSearch} id="input-with-sx" label="Поиск сотрудника" variant="outlined" />
+                    </Box>
                     <Box sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}>
-                        <Button onClick={handleOpenModal} variant='outlined' size='large' key={1} sx={{ mr: 2, fontWeight:'bold', letterSpacing:2}} startIcon={<AddCircleOutlineIcon />}>
+                        <Button onClick={handleOpenModal} variant='outlined' size='large' sx={{ mr: 2, fontWeight: 'bold', letterSpacing: 2 }} startIcon={<AddCircleOutlineIcon />}>
                             Добавить сотрудника
                         </Button>
                     </Box>
                 </Toolbar>
             </AppBar>
-            <Box component="nav">
+            <Box position={'fixed'} component="nav">
                 <Drawer
                     variant="temporary"
                     open={mobileOpen}

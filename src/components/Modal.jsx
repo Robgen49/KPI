@@ -1,7 +1,8 @@
 import React from 'react';
-import {Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
+import { Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 
-import {KPI} from '../app/constParamsObj';
+import generateId from '../app/generateID'
+import { KPI } from '../app/constParamsObj';
 
 import { useSelector, useDispatch } from 'react-redux'
 import { setModalFalse } from '../features/ModalSlice'
@@ -25,17 +26,21 @@ export default function Modal() {
     }
     const submitHandler = (event) => {
         event.preventDefault();
+        const idObj = {
+            id: generateId(),
+        }
 
         const kpiValues = KPI(formValues)
         dispatch(setCards([
             ...cards,
             {
-            ...formValues,
-            ...kpiValues,
+                ...idObj,
+                ...formValues,
+                ...kpiValues,
             }
-        ].sort((a,b) => a.title.localeCompare(b.title))))
-        localStorage.setItem(formValues.id, JSON.stringify({...formValues, ...kpiValues}))
-        console.log(JSON.parse(localStorage.getItem(formValues.id)))
+        ].sort((a, b) => a.title.localeCompare(b.title))))
+        localStorage.setItem(idObj.id, JSON.stringify({...kpiValues, ...formValues, ...idObj}))
+        console.log(JSON.parse(localStorage.getItem(cards.id)))
         dispatch(clearFormValues())
     }
 

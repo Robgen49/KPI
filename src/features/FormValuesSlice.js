@@ -1,11 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
-import generateID from '../app/generateID'
 
 export const FormValuesSlice = createSlice({
   name: 'formValues',
   initialState: {
     value: {
-      id: generateID(),
       title: '',
       status: '',
       averageCheck: '',
